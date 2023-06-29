@@ -20,7 +20,7 @@ const initialState: AuthState = {
 
 export const registerUser = createAsyncThunk<AuthState, { email: string, password: string }>(
 	'auth/registerUser',
-	async function ({ email, password }) {
+	async ({ email, password }) => {
 		try {
 			const { data } = await axios.post('/auth/register', {
 				email,
@@ -91,7 +91,6 @@ export const authSlice = createSlice({
 				state.status = payload?.status
 				state.user = payload?.user
 				state.token = payload?.token
-				console.log(state.token)
 			})
 			.addCase(loginUser.pending, (state) => {
 				state.isLoading = true

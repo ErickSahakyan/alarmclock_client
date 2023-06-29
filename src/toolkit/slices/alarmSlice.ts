@@ -4,9 +4,11 @@ import { IAlarm, IWeekday } from "../../types/types";
 
 
 
-type AlarmsState = {
-	alarms: IAlarm[],
-	isLoading: boolean
+interface AlarmsState {
+	alarms: IAlarm[] | undefined,
+	token: string | boolean | null,
+	isLoading: boolean,
+	status: string | null,
 }
 
 
@@ -52,8 +54,9 @@ export const handleCondition = createAsyncThunk<IAlarm[], { id: string, conditio
 	}
 )
 
-export const handleRemove = createAsyncThunk<IAlarm[], { id: string }>(
-	'alarm/handleRemove', async (id) => {
+export const handleRemove = createAsyncThunk<IAlarm[], { id: string | undefined }>(
+	'alarm/handleRemove',
+	async function ({ id }) {
 		try {
 			const { data } = await axios.delete(`/alarm/${id}`)
 
@@ -64,7 +67,7 @@ export const handleRemove = createAsyncThunk<IAlarm[], { id: string }>(
 	}
 )
 
-export const changeAlarm = createAsyncThunk<IAlarm[], { time: string, text: string, id: string | undefined, condition: boolean, weekday: IWeekday[] }>(
+export const changeAlarm = createAsyncThunk<IAlarm[], { time: string, text?: string, id: string | undefined, condition: boolean | undefined, weekday: IWeekday[] }>(
 	'alarm/changeAlarm', async ({ time, text, id, condition, weekday }) => {
 		try {
 			const { data } = await axios.put(`/alarm/${id}`, {
@@ -100,7 +103,9 @@ export const duplicateAlarmClock = createAsyncThunk<IAlarm[], { time: string, te
 
 const initialState: AlarmsState = {
 	alarms: [],
-	isLoading: false
+	token: null,
+	isLoading: false,
+	status: null,
 }
 
 export const alarmSlice = createSlice({
@@ -112,17 +117,20 @@ export const alarmSlice = createSlice({
 			.addCase(getAllAlarms.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getAllAlarms.fulfilled, (state, { payload }) => {
+			.addCase(getAllAlarms.fulfilled, (state, action) => {
 				state.isLoading = false
-				// state.alarms = payload.alarms
+				state.alarms = action.payload
 			})
 
 			.addCase(createAlarm.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(createAlarm.fulfilled, (state, { payload }) => {
+			.addCase(createAlarm.fulfilled, (state, {payload}) => {
 				state.isLoading = false;
-				// state.alarms.push(payload)
+				// if(payload && payload){
+					// state.alarms?.push(payload)
+				// }
+				// console.log('action', payload && payload)
 			})
 
 			.addCase(handleCondition.pending, (state) => {
@@ -130,7 +138,7 @@ export const alarmSlice = createSlice({
 			})
 			.addCase(handleCondition.fulfilled, (state, { payload }) => {
 				state.isLoading = false
-				// const toggleWeekday = state.alarms.find(alarm => alarm._id !== payload._id)
+				// const toggleWeekday = state.alarms?.find(alarm => alarm._id !== payload)
 				// if (toggleWeekday) {
 				// toggleWeekday.condition = !toggleWeekday.condition
 				// }
@@ -151,7 +159,6 @@ export const alarmSlice = createSlice({
 				state.isLoading = false;
 				// const index = state.alarms?.findIndex((alarm) => alarm?._id === payload._id)
 				// state.alarms === undefined ? '' : state.alarms[index] = payload
-
 			})
 
 			.addCase(duplicateAlarmClock.pending, (state) => {

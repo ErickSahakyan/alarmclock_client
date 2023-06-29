@@ -2,7 +2,7 @@ import { AppBar, Box, Drawer, IconButton, Toolbar, Button, Divider, List, ListIt
 import React, { FC, useState } from 'react'
 import img from './../../image/img.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import TimerIcon from '@mui/icons-material/Timer';
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
@@ -13,6 +13,9 @@ import PopupState, { bindToggle, bindPopper } from 'material-ui-popup-state';
 import Fade from '@mui/material/Fade';
 import Paper from '@mui/material/Paper';
 import { useAppSelector } from '../../hooks/useToolkit';
+import { useAppDispatch } from '../../toolkit/store';
+import { logout } from '../../toolkit/slices/authSlice';
+import { toast } from 'react-toastify'
 
 
 // interface HomeProps {
@@ -22,17 +25,22 @@ import { useAppSelector } from '../../hooks/useToolkit';
 const Home: FC = () => {
 	const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+
 	const handleDrawerToggle = () => {
 		setMobileOpen((prevState) => !prevState);
 	};
 
 	const isAuth = useAppSelector(state => state.auth.token)
+	const data = useAppSelector(state => state.auth.user?.email)
 
 	const handleLogout = () => {
+		dispatch(logout())
 		// dispatch(logout())
-		// window.localStorage.removeItem('token')
-		// navigate('/')
-		// toast('Выход из системы!')
+		window.localStorage.removeItem('token')
+		navigate('/')
+		toast('Выход из системы!')
 	}
 
 	return (
@@ -153,7 +161,7 @@ const Home: FC = () => {
 									alignItems: 'center',
 									mt: 2
 								}}>
-									{/* <Typography sx={{ color: 'blue', fontSize: 14 }}> {data.user?.username ? data?.user?.username : ''}</Typography> */}
+									<Typography sx={{ color: 'blue', fontSize: 14 }}> {data ? data : ''}</Typography>
 									<Button sx={{ background: 'red', color: 'white' }} onClick={handleLogout}>Выйти</Button>
 								</Box>
 							) : <Link to='/login' style={{ textDecoration: 'none', color: 'white' }}>Войти</Link>}

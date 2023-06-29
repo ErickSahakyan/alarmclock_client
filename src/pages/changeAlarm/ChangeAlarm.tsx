@@ -10,23 +10,23 @@ import { AppBar, Box, Button, Toolbar } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../toolkit/store';
+import { changeAlarm, getAllAlarms, handleRemove } from '../../toolkit/slices/alarmSlice';
 
-// interface ChangeAlarmProps {
-// 	playAudio: () => void
-// }
 
 const ChangeAlarm: FC = () => {
 	const [changeTime, setChangeTime] = useState<string>('')
 	const [changeText, setChangeText] = useState<string>('')
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [time, setTime] = useState<string>(new Date().toLocaleDateString());
+	// const [time, setTime] = useState<string>(new Date().toLocaleDateString());
+
 	const open = Boolean(anchorEl);
 	const { id } = useParams()
 
 	const dispatch = useAppDispatch()
 
 	const alarms = useAppSelector(state => state.alarm.alarms)
-	const currentAlarm = alarms?.find(el => el._id.$oid === id)
+	const weekday = useAppSelector(state => state.weekday.weekday)
+	const currentAlarm = alarms?.find(el => el._id === id)
 
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -37,33 +37,28 @@ const ChangeAlarm: FC = () => {
 	};
 
 	const removeAlarm = () => {
-		// try {
-		// dispatch(handleRemove(id))
-		// } catch (error) {
-		// console.log(error)
-		// }
+		dispatch(handleRemove({ id }))
 	}
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			setTime(new Date().toLocaleTimeString());
-		}, 1000);
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		setTime(new Date().toLocaleTimeString());
+	// 	}, 1000);
 
-		return () => clearInterval(intervalId);
-	}, []);
+	// 	return () => clearInterval(intervalId);
+	// }, []);
+
+
+	let time = changeTime;
+	let text = changeText === '' ? currentAlarm?.text : changeText;
+	let condition = currentAlarm?.condition
 
 	useEffect(() => {
-		// dispatch(getAllAlarms())
-	}, [])
+		dispatch(getAllAlarms())
+	}, [dispatch])
 
 	const updateAlarm = () => {
-		try {
-			console.log(changeText)
-			console.log(changeTime)
-			// dispatch(changeAlarm({ time, text, id, condition, weekday }))
-		} catch (error) {
-			console.log(error)
-		}
+		dispatch(changeAlarm({ time, text, id, condition, weekday }))
 	}
 
 	const handleTime = (event: ChangeEvent<HTMLInputElement>) => {
@@ -184,7 +179,6 @@ const ChangeAlarm: FC = () => {
 								</MenuItem>
 							</Menu>
 						</div>
-						{/* <LongMenu duplicateAlarm={duplicateAlarm} id={id} /> */}
 					</Toolbar>
 				</AppBar>
 			</Box>

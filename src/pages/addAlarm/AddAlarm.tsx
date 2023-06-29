@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom'
 import Input from '@mui/joy/Input';
 import { useAppSelector } from '../../hooks/useToolkit'
 import ClearIcon from '@mui/icons-material/Clear';
-import toast, { Toaster } from 'react-hot-toast'
+// import toast, { Toaster } from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button } from '@mui/material';
 import { useAppDispatch } from '../../toolkit/store';
+import { createAlarm, duplicateAlarmClock } from '../../toolkit/slices/alarmSlice';
 
 
 
@@ -29,14 +30,14 @@ const NewAlarm: FC = () => {
 	const navigate = useNavigate()
 
 
-	const notify = () => toast("Будильник добавлен!", {
-		icon: '👏',
-		style: {
-			borderRadius: '10px',
-			background: '#333',
-			color: '#fff',
-		},
-	})
+	// const notify = () => toast("Будильник добавлен!", {
+	// 	icon: '👏',
+	// 	style: {
+	// 		borderRadius: '10px',
+	// 		background: '#333',
+	// 		color: '#fff',
+	// 	},
+	// })
 
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -56,7 +57,8 @@ const NewAlarm: FC = () => {
 
 	const duplicateAlarm = () => {
 		try {
-			// dispatch(duplicateAlarmClock({ time, text, condition }))
+			dispatch(duplicateAlarmClock({ time, text, condition }))
+			// toast(notify)
 		} catch (error) {
 			console.log(error)
 		}
@@ -64,31 +66,10 @@ const NewAlarm: FC = () => {
 
 	const handleAddNewAlarm = () => {
 		try {
-			console.log(time)
-			console.log(text)
-			console.log(condition)
-			// dispatch(createAlarm({ time, text, condition, weekday }))
-			// navigate('/')
+			dispatch(createAlarm({ time, text, condition, weekday }))
+			navigate('/')
 		} catch (error) {
 			console.log(error)
-		}
-	}
-
-
-
-	const style = {
-		box3: {
-			mt: '8rem'
-		},
-		input: {
-			color: 'black',
-			bgcolor: 'none',
-			width: {
-				xs: '250px',
-			},
-			fontSize: {
-				xs: 18,
-			}
 		}
 	}
 
@@ -98,7 +79,7 @@ const NewAlarm: FC = () => {
 				flexGrow: 1,
 				minWidth: '100vw'
 			}}>
-				<Toaster />
+				{/* <Toaster /> */}
 				<AppBar
 					position="static"
 					sx={{
@@ -267,5 +248,22 @@ const NewAlarm: FC = () => {
 		</form>
 	)
 }
+
+const style = {
+	box3: {
+		mt: '8rem'
+	},
+	input: {
+		color: 'black',
+		bgcolor: 'none',
+		width: {
+			xs: '250px',
+		},
+		fontSize: {
+			xs: 18,
+		}
+	}
+}
+
 
 export default NewAlarm

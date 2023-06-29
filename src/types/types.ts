@@ -5,11 +5,9 @@ export interface IWeekday {
 }
 
 export interface IAlarm {
-	_id: {
-		$oid: string
-	},
+	_id: string,
 	time: string,
-	text: string,
+	text?: string,
 	condition: boolean,
 	weekday: IWeekday[],
 	createdAt: {
@@ -18,7 +16,6 @@ export interface IAlarm {
 	updatedAt: {
 		$data: string
 	},
-	__v: number,
 }
 
 export interface IUser {
@@ -34,5 +31,4 @@ export interface IUser {
 	updatedAt: {
 		$data: string
 	},
-	__v: number,
 }
