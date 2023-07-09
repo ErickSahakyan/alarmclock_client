@@ -11,6 +11,8 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../toolkit/store';
 import { changeAlarm, getAllAlarms, handleRemove } from '../../toolkit/slices/alarmSlice';
+import { toast } from 'react-toastify'
+
 
 
 const ChangeAlarm: FC = () => {
@@ -59,6 +61,7 @@ const ChangeAlarm: FC = () => {
 
 	const updateAlarm = () => {
 		dispatch(changeAlarm({ time, text, id, condition, weekday }))
+		toast('Будильник изменён!')
 	}
 
 	const handleTime = (event: ChangeEvent<HTMLInputElement>) => {

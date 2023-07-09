@@ -1,16 +1,15 @@
 import React, { FC, ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
-import { Button, Card, CardContent, FormControl, FormLabel, Grid, IconButton, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, FormControl, FormLabel, Grid, IconButton, Typography } from '@mui/material'
 import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import Input from '@mui/joy/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/useToolkit';
 import { toast } from 'react-toastify'
-import { loginUser } from '../../toolkit/slices/authSlice';
+import { loginUser, signInFacebook, signInGoogle } from '../../toolkit/slices/authSlice';
 import { useAppDispatch } from '../../toolkit/store';
-
-
-
+import GoogleIcon from '../../image/7611770.png';
+import FacebookIcon from '../../image/Facebook_f_logo_(2021).svg.png';
 
 
 const Login: FC = () => {
@@ -35,6 +34,21 @@ const Login: FC = () => {
 		}
 	}, [isAuth, status, navigate])
 
+	const handleGoogle = () => {
+		try {
+			dispatch(signInGoogle())
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	const handleFacebook = () => {
+		try {
+			dispatch(signInFacebook())
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -109,8 +123,43 @@ const Login: FC = () => {
 								>
 									Войти
 								</Button>
-								<Link to='/register' style={style.link}>Нет аккаунта?</Link>
+								<Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+									<Link to='/register' style={style.link}>Нет аккаунта?</Link>
+									<Link to='/reset' style={style.link}>Сбросить пароль?</Link>
+								</Box>
 							</Grid>
+							<Box sx={{
+								display: 'flex',
+								flexDirection: 'row',
+								justifyContent: 'center',
+								alignItems: 'center',
+								minWidth: '100%',
+								mt: 3,
+								gap: '10px'
+							}}>
+								<Button 
+									sx={{
+										width: '150px',
+										height: '50px',
+										border: '1px solid black',
+									}}
+									onClick={handleGoogle}										
+									>
+									<img src={GoogleIcon} alt='@#$' style={{width: '35px', height: '35px'}}/>
+									<Typography sx={{color: 'black', ml: 1, fontSize: 16}}>Google</Typography>
+								</Button>
+								<Button 
+									sx={{
+										border: '1px solid black',
+										width: '150px',
+										height: '50px',
+									}}
+									onClick={handleFacebook}
+									> 
+									<img src={FacebookIcon} alt='@#$' style={{width: '25px', height: '25px'}}/>
+									<Typography sx={{color: 'black', ml: 1.5, fontSize: 16}}>Facebook</Typography>
+								</Button>
+							</Box>
 						</Grid>
 					</FormControl>
 				</form>
@@ -121,7 +170,7 @@ const Login: FC = () => {
 
 const style = {
 	card: {
-		width: '100%', height: '100vh'
+		width: '100%', height: '100vh' 
 	},
 	cardContent: {
 		display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '200px'

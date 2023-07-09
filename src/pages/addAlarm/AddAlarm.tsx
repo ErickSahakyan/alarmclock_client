@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import Input from '@mui/joy/Input';
 import { useAppSelector } from '../../hooks/useToolkit'
 import ClearIcon from '@mui/icons-material/Clear';
-// import toast, { Toaster } from 'react-hot-toast'
+import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -30,14 +30,6 @@ const NewAlarm: FC = () => {
 	const navigate = useNavigate()
 
 
-	// const notify = () => toast("Будильник добавлен!", {
-	// 	icon: '👏',
-	// 	style: {
-	// 		borderRadius: '10px',
-	// 		background: '#333',
-	// 		color: '#fff',
-	// 	},
-	// })
 
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -58,7 +50,7 @@ const NewAlarm: FC = () => {
 	const duplicateAlarm = () => {
 		try {
 			dispatch(duplicateAlarmClock({ time, text, condition }))
-			// toast(notify)
+			toast('Будильник успешно отдублирован!')
 		} catch (error) {
 			console.log(error)
 		}
@@ -68,6 +60,7 @@ const NewAlarm: FC = () => {
 		try {
 			dispatch(createAlarm({ time, text, condition, weekday }))
 			navigate('/')
+			toast('Будильник успешно создан!')
 		} catch (error) {
 			console.log(error)
 		}

@@ -12,11 +12,17 @@ import { useAppDispatch } from './toolkit/store';
 import { getMe } from './toolkit/slices/authSlice';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-
+import useAudio from './hooks/useAudio';
+import ViewAlarmClock from './components/viewAlarmClock/ViewAlarmClock';
+import sound from './sound/sound.mp3'
+import useAlarmClock from './hooks/useAlarmClock';
+import ResetPassword from './pages/resetPassword/ResetPassword';
 
 function App() {
-
+	const {playAudio, stopAudio} = useAudio(sound)
 	const dispatch = useAppDispatch()
+	const { open, alarmStop, handleClose, alarmPlaySound } = useAlarmClock()
+
 
 	useEffect(() => {
 		dispatch(getMe())
@@ -28,7 +34,13 @@ function App() {
 			<Router>
 				<Routes>
 					<Route path="/" element={
-						<Home />
+						<Home 
+							playAudio={playAudio}
+							open={open}
+							alarmStop={alarmStop}
+							handleClose={handleClose}
+							alarmPlaySound ={alarmPlaySound}
+						/>
 					}
 					/>
 					<Route path="/newAlarm" element={
@@ -43,13 +55,16 @@ function App() {
 					<Route path="/login" element={
 						<Login />
 					} />
-					{/* <Route path="/view/:id" element={
+					<Route path="/view/:id" element={
 						<ViewAlarmClock
 							stopAudio={stopAudio}
 							playAudio={playAudio}
 						/>
 					} />
-					<Route path="/stopwatch" element={
+					<Route path="/reset" element={
+						<ResetPassword />
+					} />
+					{/* <Route path="/stopwatch" element={
 						<Timer />
 					} /> */}
 				</Routes>

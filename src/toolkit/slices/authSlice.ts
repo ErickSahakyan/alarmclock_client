@@ -22,7 +22,7 @@ export const registerUser = createAsyncThunk<AuthState, { email: string, passwor
 	'auth/registerUser',
 	async ({ email, password }) => {
 		try {
-			const { data } = await axios.post('/auth/register', {
+			const { data } = await axios.post('/auth/registration', {
 				email,
 				password,
 			})
@@ -40,7 +40,7 @@ export const loginUser = createAsyncThunk<AuthState, { email: string, password: 
 	'auth/loginUser',
 	async function ({ email, password }) {
 		try {
-			const { data } = await axios.post('/auth/login', {
+			const { data } = await axios.post('/auth/authorization', {
 				email,
 				password,
 			})
@@ -58,7 +58,7 @@ export const getMe = createAsyncThunk<AuthState>(
 	'auth/getMe',
 	async () => {
 		try {
-			const { data } = await axios.get('/auth/me')
+			const { data } = await axios.get('/auth/user')
 
 			return data
 		} catch (error) {
@@ -67,7 +67,50 @@ export const getMe = createAsyncThunk<AuthState>(
 	},
 )
 
+export const resetPassword = createAsyncThunk<IUser, {email: string, password: string}>(
+	'auth/resetPassword',
+	async ({email, password}) => {
+		try {
+			const {data} = await axios.put('auth/reset', {
+				email,
+				password
+			})
 
+			return data
+		} catch (error) {
+			console.log(error)
+		}
+	}
+)
+
+export const findUser = createAsyncThunk<AuthState, { email: string }>(
+	'auth/findUser',
+	async function ({ email }) {
+		try {
+			const { data } = await axios.post('/auth/findUser', {email})
+			return data
+		} catch (error) {
+			console.log(error)
+		}
+	},
+)
+
+
+export const signInGoogle = createAsyncThunk(
+	'sigIn/signInGoogle',
+	async () => {
+		const {data} = await axios.get('/sign/google')
+		return data
+	}
+)
+
+export const signInFacebook = createAsyncThunk(
+	'sigIn/signInFacebook',
+	async () => {
+		const {data} = await axios.get('/facebook')
+		return data
+	}
+)
 
 export const authSlice = createSlice({
 	name: 'auth',
@@ -111,6 +154,16 @@ export const authSlice = createSlice({
 				state.status = null
 				state.user = payload?.user
 				state.token = payload?.token
+			})
+
+			.addCase(findUser.pending, (state) => {
+				state.isLoading = true;
+				state.status = null;
+			})
+			.addCase(findUser.fulfilled, (state, action) => {
+				state.isLoading = true;
+				state.status = null;
+				state.user = action.payload?.user
 			})
 	}
 })

@@ -16,13 +16,19 @@ import { useAppSelector } from '../../hooks/useToolkit';
 import { useAppDispatch } from '../../toolkit/store';
 import { logout } from '../../toolkit/slices/authSlice';
 import { toast } from 'react-toastify'
+import AlarmCard from '../../components/card/AlarmCard';
 
 
-// interface HomeProps {
-// 	playAudio: () => void
-// }
+interface HomeProps {
+	playAudio: () => void
+	open: boolean,
+    alarmStop: () => void,
+    handleClose: () => void,
+    alarmPlaySound:() => void,
 
-const Home: FC = () => {
+}
+
+const Home: FC<HomeProps> = ({open, alarmStop, playAudio, handleClose, alarmPlaySound }) => {
 	const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
 	const dispatch = useAppDispatch()
@@ -179,9 +185,13 @@ const Home: FC = () => {
 					},
 				}}
 			>
-				{/* <AlarmCard
+				<AlarmCard 
 					playAudio={playAudio}
-				/> */}
+					open={open}
+					alarmStop={alarmStop}
+					handleClose={handleClose}
+					alarmPlaySound={alarmPlaySound}
+				/>
 			</Box>
 			<Box
 				sx={{
